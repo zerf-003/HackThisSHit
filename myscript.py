@@ -17,8 +17,10 @@ import platform
 from platform import system
 import requests
 from bs4 import  BeautifulSoup
+import lxml.html
 import json
 import  time
+import random
 
 #fonction to get website IP's
 def MassIPScanner():
@@ -67,8 +69,8 @@ def MassIPScanner():
     time.sleep(1.5)
     for i in lines:
         i = i.decode("utf-8")
-        if not i.startswith('http'):       
-            i = "http://" + i
+        if not i.startswith('http'): 
+            i = "http://" + i      
             try:
                 req = requests.get(i)
                 if req.status_code == 200:
@@ -84,7 +86,7 @@ def MassIPScanner():
                         print(Fore.GREEN+'[CANT\'T FIND IP]'+' '+  string)
                     else:
                         time.sleep(0.05)
-                        print(string)     
+                        print(string)
             except requests.exceptions.ConnectionError:
                 i  = Fore.LIGHTWHITE_EX + i
                 err = Fore.RED + '[HOST DOWN, CAN\'T FIND IP]'
@@ -116,6 +118,7 @@ def MassIPScanner():
                 x = Fore.CYAN + "[x]"
                 string= err + " " + arrow + " " + x + " " + i + " " + x
                 print(string)
+            
     count += 1
 #Fonction to get Hosts inside a specific server
 def RevereseIP_Domain():
@@ -130,7 +133,7 @@ def RevereseIP_Domain():
     }   
     res = requests.post(url, data=payload, headers = {"user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"})
     data = res.json()
-    #display the results
+    #display the resultsf
     for values in data.values():     
         try:
             with open('GrabbedHostsByIP.txt', "w")as file:
@@ -166,7 +169,7 @@ def FindAdmin_panel():
         'user.asp','user.html','admincp/index.asp','admincp/login.asp','admincp/index.html','admin/adminLogin.html',
         'adminLogin.html','admin/adminLogin.html'
     )
-    typing(Fore.GREEN +"[!] For Better results enter websites with a slash \'/\' at the end\n")
+    typing(Fore.GREEN +"[!] To get  results enter websites with a slash \'/\' at the end\n")
     time.sleep(1.5)
     admin_list = input(Fore.YELLOW + '[#] Enter a path of a websites lists :' + Fore.LIGHTWHITE_EX)
     #checking that the path exsits
@@ -191,13 +194,13 @@ def FindAdmin_panel():
                     print(Fore.RED+'[-] Error, enter (r) Or (R)')
                     error = input(Fore.YELLOW+'[#] Please, rerun the option by typing (r/R): '+Fore.LIGHTWHITE_EX )
     else:
-        error = input('[-] Error, can\'t find path, enter (r/R) to use these options:')
+        error = input(Fore.RED +'[-] Error, can\'t find path, enter (r/R) to use these options:' + Fore.LIGHTWHITE_EX)
         while True:
             if error == "r" or error == "R":
                 return FindAdmin_panel()
             if error!= "r" or error != "R":
-                print('[-] Error, enter (r) Or (r)')
-                error = input('[-] Error, can\'t find path, enter (r/R) to use these options:')
+                print(Fore.RED +'[-] Error, enter (r) Or (r)')
+                error = input(Fore.RED +'[-] Error, can\'t find path, enter (r/R) to use these options:' +Fore.LIGHTWHITE_EX)
                 continue
     file = open(admin_list, 'rb')
     line = file.read().splitlines()
@@ -219,9 +222,10 @@ def FindAdmin_panel():
                     if req.status_code == 200:
                         print(Fore.RED + '[ADMIN PANEL FOUND]:'+ " "+ Fore.GREEN+qq)
                     else:
-                        print(Fore.LIGHTRED_EX + '[ADMIN PANEL NOT FOUND / OR HOST DOWN]' +" "+ Fore.RED + qq)   
+                        print(Fore.LIGHTRED_EX + '[ADMIN PANEL NOT FOUND / OR HOST DOWN]' +" "+ Fore.RED + qq)             
                 except requests.exceptions.ConnectionError:
-                    print("host down")                    
+                    print(Fore.RED + "[HOST DOWN]")         
+                           
         elif i.startswith('http'):
             print(Fore.LIGHTCYAN_EX+ "--------------["+i+"]--------------")  
             for j in possiblity:
@@ -232,15 +236,25 @@ def FindAdmin_panel():
                     if req.status_code == 200:
                         print(Fore.RED + '[ADMIN PANEL FOUND]:'+ " "+ Fore.GREEN+della3)
                     else:
-                        print(Fore.LIGHTRED_EX + '[ADMIN PANEL NOT FOUND]' +" "+ Fore.RED + della3)   
+                        print(Fore.LIGHTRED_EX + '[ADMIN PANEL NOT FOUND]' +" "+ Fore.RED + della3)                     
                 except requests.exceptions.ConnectionError:
-                    print("host down")           
+                    break
+                    print(Fore.RED +"[HOST DOWN]")
+                    
     count += 1
 def Grab_with_queries():
     querie = input(Fore.YELLOW +'[#] Enter a querie to grab websites : '+ Fore.LIGHTWHITE_EX)
-    url = "https://www.bing.com/search?q={}&search=&form=QBLH".format(querie)
-    urllib
+    url = "https://www.google.com/search?q="
+    req = requests.get(url+str(querie))
+    content = req.content
+    s = BeautifulSoup(content, "html.parser")
+    
+def network_scanner():
+    pass
+    
 
+def add_slash():
+    nmi = input("enter the path of the file to add the slash : ")
 def clean_scren():
     if system() == 'Linux':
         os.system('clear')
