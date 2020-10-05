@@ -30,7 +30,6 @@ except ModuleNotFoundError:
 
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 def MassIPScanner():
-    
     try:
         path = input(Fore.YELLOW+'[\033[5m#\033[0m' + Fore.YELLOW+']Enter a Hosts File : '+ Fore.LIGHTWHITE_EX)
         file = open(path, "rb")
@@ -137,9 +136,7 @@ def FindAdmin_panel():
                                 admin.write(qq + '\n')
                         else:
                             print('\033[0;31m[---]\033[0;31mNot Found\033[0;31m\033[0;31m\033[0;31m'+ " "+ Fore.WHITE + qq)
-                   
-
-
+                            
                     except requests.ConnectionError:
                         pass
                     except requests.exceptions.ChunkedEncodingError:
@@ -192,8 +189,9 @@ def Grab_with_queries():
             path = input(Fore.YELLOW+'[\033[5m#\033[0m' + Fore.YELLOW+']Enter A Dorks File To Grab Websites : '+ Fore.LIGHTWHITE_EX)
             file = open(path)
             lines = file.read().splitlines()
+            print(Fore.RED +"\n------------"+ Fore.CYAN +"[Grab Site With Dork List, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------")
             for i in lines:
-                print("\n\033[0;32m[+]\033[1;33mGrab With Dork: \033[0;31m{}".format(i))
+                print("\n\033[0;32m[+]\033[1;33mGrabbing With Dork: \033[0;31m{}".format(i))
                 page = 1
                 try:
                     repetion = []
@@ -224,6 +222,7 @@ def Grab_with_queries():
             print('\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;31mFile Not Found')
     elif fff == "2":
         querie = input(Fore.YELLOW+'[\033[5m#\033[0m' + Fore.YELLOW+']Enter A Querie To Grab Websites : '+ Fore.LIGHTWHITE_EX)
+        print(Fore.RED +"\n------------"+ Fore.CYAN +"[Grabbing Sites With Dork, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------")
         p = 1 
         try:
             repetion = [] 
@@ -257,7 +256,7 @@ def Grab_with_queries():
 def Grab_Bing():
     try:
         file = input(Fore.YELLOW +'[\033[5m#\033[0m' + Fore.YELLOW+']Enter The IP\'s File : '+ Fore.LIGHTWHITE_EX)   
-        print(Fore.RED +"\n------------"+ Fore.CYAN +"[Grabbing WebSites From Bing, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------") 
+        print(Fore.RED +"\n------------"+ Fore.CYAN +"[Grabbing Sites From Bing, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------") 
         file = open(file, "r")
         for i in file:
             headers = {      
@@ -480,6 +479,7 @@ def SQL_Scanner():
         path = input(Fore.YELLOW+'[\033[5m#\033[0m' + Fore.YELLOW+']Enter a Hosts File : '+ Fore.LIGHTWHITE_EX)
         file = open(path, "rb")
         line =  file.read().splitlines()
+        print(Fore.RED +"\n------------"+ Fore.CYAN +"[Scannig For SQL Injection Vuln, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------")
         sss =( "DB Error", "SQL syntax;", "mysql_fetch_assoc", "mysql_fetch_array", "mysql_num_rows","is_writable",
                 "mysql_result", "pg_exec", "mysql_result", "mysql_num_rows", "mysql_query", "pg_query",
                 "System Error","io_error", "privilege_not_granted", "getimagesize", "preg_match",
@@ -488,6 +488,7 @@ def SQL_Scanner():
         headers  = {
             "User-agent" : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
         }
+
         for i in line:
             i = i.decode("utf-8")
             print(" \n \033[95m[\033[95m\033[5m+\033[0m\033[95m] \033[95mScan " + Fore.WHITE +  i  )
@@ -497,93 +498,89 @@ def SQL_Scanner():
                     if req.status_code == 200:
                         cont = req.text
                         find =re.findall(r'href=[\'"]?([^\'" >]+)', cont)
-                        if len(find) != 0: 
-                            MaybeSqli = []
-                            
-                                
+                        if len(find) == 0:
+                            print('\033[0;31m[\033[0;31m\033[5m-\033[0;31m]' +' \033[0;31mCan\'t Find Injections Points')
+                        elif len(find) != 0:
                             for _ in find:
-                                if ".php?id=" or ".php?ID=" or '.php?cat=' in str(_):
-                                    MaybeSqli.append(_)
-                                    for sss in error:
-                                    if ".php?id=" or ".php?ID=" or '.php?cat=' in str(_):
-                                        MaybeSqli.append(_)
-                                        try:
-                                            req =requests.get(i + "/" + _ +"'",verify=True, headers = headers)
-                                            if error in req.text:
-                                                print('[+]' + "" + i.replace("'", "") +" " +  "Vulerable For SQL Injection at these point " + i+'/'+_)
-                                                with open('SQLiTargets.txt', "a") as SQL:
-                                                    SQL.write(i + "/" + _ + '\n')
-                                                break
+                                if '.php?' in str(_):
+                                    print("\033[0;31m[\033[1;33m+\033[0;31m] \033[1;34mInjcetion Points Found....Checking For SQL Errors (Trying SQLi)") 
+                                    try:
+                                        req =requests.get(i + "/" + _ +"'",verify=True, headers = headers)
+                                        for err in sss:
+                                            if err in req.text: 
+                                                print('\033[1;33m[\033[0;32m+\033[1;33m] \033[0;31m>>>' + " " +"\033[0;35m"+ i.replace("'", "") +" " +  """\033[0;32mVulerable For SQL Injection
+                                                \033[1;33m[\033[0;32m+\033[1;33m] \033[0;31m>>> \033[0;35mInjection Point: \033[0;31m{}    """.format( i + '/' + _)) 
+                                                with open('SQLiTargets.txt', 'a') as sql:
+                                                    sql.write(i + "/" + _  +"\n")
+                                                break 
                                             else:
-                                               pass
-                                        except requests.exceptions.SSLError:
-                                            pass
-                                        except requests.exceptions.ChunkedEncodingError:
-                                            pass
-                                        except requests.exceptions.ConnectionError:
-                                            pass
-                                        else:
-                                            pass
-                                    else:
-                                        pass  
-                                else:
-                                    pass       
-                        else:
-                            pass
-                            
-                    else:
-                        print("\033[0;31m[\033[0;31m\033[5m!\033[0;31m]\033[0;31m Crashed")   
-                        
-                except requests.exceptions.SSLError:
-                    pass
-                except requests.exceptions.ChunkedEncodingError:
-                    pass
-                except requests.exceptions.ConnectionError:
-                    pass        
-            else:
-                i = 'http://' + i
-                try:
-                    req =requests.get(i, headers = headers)
-                    if req.status_code == 200:
-                        cont = req.text
-                        find = re.findall(r'href=[\'"]?([^\'" >]+)', cont)
-                        if len(find) != 0:
-                            for _ in find:
-                                if ".php?" in str(_):
-                                    for error in sss:
-                                        try:
-                                            req =requests.get(i + "/" + _ +"'",verfiy=True, headers = headers)
-                                            if error in req.text:
-                                                print('[+]' + "" + i.replace("'", "") +" " +  "Vulerable For SQL Injection")
-                                                with open('SQLiTargets.txt','a') as sql:
-                                                    sql.write(i + "/" + _ + '\n')
-                                                break
-                                            else:
-                                                pass
-                                                
-                                        except requests.exceptions.SSLError:
-                                            pass
-                                        except requests.exceptions.ChunkedEncodingError:
-                                            pass
-                                        except requests.exceptions.ConnectionError:
-                                            pass
-                                    else:
+                                                time.sleep(0.5)
+                                                print('\033[0;31m[\033[0;31m\033[5m-\033[0;31m]' +' \033[0;31mNot Vulnerable')          
+                                        break                 
+                                    except requests.exceptions.ChunkedEncodingError:
                                         pass
+                                    except requests.exceptions.SSLError:
+                                        pass
+                                    except requests.exceptions.ConnectionError:
+                                        pass   
+                                    except requests.exceptions.MissingSchema:
+                                        pass                                
                                 else:
                                     pass
-                            else:
-                                pass        
-                        else:
-                            pass
-                            
                     else:
-                        print('\033[0;31m[\033[0;31m\033[5m!\033[0;31m]\033[0;31m Crashed')
-                except requests.exceptions.SSLError:
-                    pass
+                        print('\033[0;31m[\033[0;31m\033[5m-\033[0;31m]' +' \033[0;31mCrashed')
                 except requests.exceptions.ChunkedEncodingError:
                     pass
+                except requests.exceptions.SSLError:
+                    pass
                 except requests.exceptions.ConnectionError:
-                    pass        
+                    pass    
+                except requests.exceptions.MissingSchema:
+                    pass
+            else:
+                try:
+                    req = requests.get(i,verify=True, headers = headers)
+                    if req.status_code == 200:
+                        cont = req.text
+                        find =re.findall(r'href=[\'"]?([^\'" >]+)', cont)
+                        if len(find) ==0:
+                            print('\033[0;31m[\033[0;31m\033[5m-\033[0;31m]' +' \033[0;31mCan\'t Find Injections Points')
+                        elif len(find) != 0:
+                            for _ in find:
+                                if '.php?' in str(_):
+                                    print("\033[0;31m[\033[1;33m+\033[0;31m] \033[1;34mInjcetion Points Found....Checking For SQL Errors (Trying SQLi)")  
+                                    try:
+                                        req =requests.get(i + "/" + _ +"'",verify=True, headers = headers)
+                                        for err in sss:
+                                            if err in req.text: 
+                                                print('\033[1;33m[\033[0;32m+\033[1;33m] \033[0;31m>>>' + " " +"\033[0;35m"+ i.replace("'", "") +" " +  """\033[0;32mVulerable For SQL Injection
+                                                \033[1;33m[\033[0;32m+\033[1;33m] \033[0;31m>>> \033[0;35mInjection Point: \033[0;31m{}    """.format( i + '/' + _)) 
+                                                with open('SQLiTargets.txt', 'a') as sql:
+                                                    sql.write(i + "/" + _  +"\n")
+                                                break 
+                                            else:
+                                                time.sleep(0.5)
+                                                print('\033[0;31m[\033[0;31m\033[5m-\033[0;31m]' +' \033[0;31mNot Vulnerable')                
+                                        break               
+                                    except requests.exceptions.ChunkedEncodingError:
+                                        pass
+                                    except requests.exceptions.SSLError:
+                                        pass
+                                    except requests.exceptions.ConnectionError:
+                                        pass                           
+                                    except requests.exceptions.MissingSchema:
+                                        pass        
+                                else:
+                                    pass
+                    else:
+                        print('\033[0;31m[\033[0;31m\033[5m-\033[0;31m]' +' \033[0;31mCrashed')
+                except requests.exceptions.ChunkedEncodingError:
+                    pass
+                except requests.exceptions.SSLError:
+                    pass
+                except requests.exceptions.ConnectionError:
+                    pass  
+        print(Fore.MAGENTA +'[x] Saved Results In SQLiTargets.txt')   
     except FileNotFoundError:
         print('\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;31mFile Not Found')
 
@@ -594,6 +591,7 @@ def wifi_jammer():
         print("\033[0;31m[\033[5m-\033[0m\033[0;31m] Rerun The Script as sudo [This Option Require root Privilege]")
         sys.exit()
     else:
+        print(Fore.RED +"\n------------"+ Fore.CYAN +"[Scannig Access Points, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------")
         iwconfig = subprocess.Popen(['iwconfig'], stdout=subprocess.PIPE, stderr = subprocess.STDOUT)
         a = iwconfig.stdout.read()
         a= a.decode("utf-8")
@@ -647,14 +645,19 @@ def wifi_jammer():
                
 
 def network_scanner():
-    net1 = input('\033[0;31m[\033[0;36m\033[5m>\033[0;31m]\033[0mEnter a Network/IP To Scan (Ex:192.168.0.0/24, 10.0.0.1...etc): ')
-    my_scan = networkscan.Networkscan(net1)    
-    my_scan.run()
-    print('\033[0;32m[\033[1;33m+\033[0;32m] \033[0;31mScan Network For IP\'s')
-    for i in my_scan.list_of_hosts_found:
-        time.sleep(0.05)
-        print("[+]IP >>>" + "" + i)
-    print("[+]Number Of Hosts Found: " + str(my_scan.nbr_host_found))
+    try:
+        net1 = input('\033[0;31m[\033[0;36m\033[5m>\033[0;31m]\033[0mEnter a Network/IP To Scan (Ex:192.168.0.0/24, 10.0.0.1...etc): ')
+        print(Fore.RED +"\n------------"+ Fore.CYAN +"[Scannig For IP\'s In The Networks, Please Wait\033[0m"+Fore.CYAN+"]"+Fore.RED+"------------")
+        my_scan = networkscan.Networkscan(net1)    
+        my_scan.run()
+        print('\033[0;32m[\033[1;33m+\033[0;32m] \033[0;31mScan Network For IP\'s')
+        for i in my_scan.list_of_hosts_found:
+            time.sleep(0.05)
+            print("\033[1;33m[\033[0;32m+\033[1;33m] \033[0;31m>>>" + " " +"\033[0;35m" + i   )
+        print("[+]Number Of Hosts Found: \033[0;37m" + str(my_scan.nbr_host_found))
+    except:
+        print('\033[0;31m[-] Sorry, Something Is Going Wrong, Check That You Are Connected To A Network')
+
 def clean_scren():
     if system() == 'Linux':
         os.system('clear')
@@ -682,6 +685,8 @@ def Public_Ip():
     try:
         url_publicIp =  "http://api.ipify.org/"
         req =requests.get(url_publicIp, headers={"user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"})
+        print('\033[0;32m[\033[1;33m+\033[0;32m] \033[0;31mPlease wait... Scanning...')
+        time.sleep(1.5)
         print("\033[0;36m[\033[0;31m+\033[0;36m]\033[0;36m \033[0;37mMy Public IP Is: " + "\033[0;31m"+ req.text)
     except:
         print('\033[0;31m[-] Sorry, Something Is Going Wrong, Check That You Are Connected To A Network')
@@ -690,23 +695,18 @@ def choices():
     choice = input(Fore.LIGHTCYAN_EX +" \n[x] Choose options:  "+ Fore.LIGHTWHITE_EX)
     if choice == "1":
         typing('\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5mGrab Hosts With Dorks \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n')
-        time.sleep(0.5)
         Grab_with_queries()    
     if choice == "2":
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Zone-H.org Grabber \033[0m \033[0;32mOption \033[0;36mENJOY ^__^ \n")
-        time.sleep(0.05)
         zone_h()
     if choice == "3":
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Bing Grabber \033[0m \033[0;32mOption \033[0;36mENJOY ^__^ \n")
-        time.sleep(0.5)
         Grab_Bing()
     if choice == "4":
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Mass IP Scanner \033[0m \033[0;32mOption \033[0;36mENJOY ^__^ \n")
-        time.sleep(0.5)
         MassIPScanner()
     if choice == "5":
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Reverse IP Domain \033[0m \033[0;32mOption \033[0;36mENJOY ^__^ \n")
-        time.sleep(0.5)
         RevereseIP_Domain()
     if choice == "6":
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Admin Panel Finder \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")
@@ -721,14 +721,14 @@ def choices():
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Access Point Scanner \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")  
         wifi_jammer()      
     if choice == '10':
-        typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Public IP Sniffer \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")
-        Public_Ip()
-    if choice =="11":
-        typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Local IP Sniffer \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")
-        local_IP() 
-    if choice == "12":
         typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Network Sniffer \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")
         network_scanner()
+    if choice =="11":
+        typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Public IP Sniffer \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")
+        Public_Ip()
+    if choice == "12":
+        typing("\033[0;37m[\033[0;31m\033[5mx\033[0;37m] \033[0;32m Welcome to \033[1;36m\033[5m Local IP Sniffer \033[0m \033[0;32mOption \033[0;36m ENJOY ^__^ \n")
+        local_IP() 
     continueer = input(Fore.LIGHTRED_EX+'\n[+]Do you want to continue (y/n): '+ Fore.WHITE)
     if continueer == "y" or continueer == "Y":
         all_in_one()
@@ -767,9 +767,9 @@ def all_in_one():
 
             \033[0;37m---------[\033[0;36m\033[5mWIRLESSE HACKING\033[0m\033[0;37m]--------- 
                \033[9m\033[0;31m[\033[0;32m9\033[0;31m]\033[0m: \033[0;37mScan For Access Points [BSSID, ESSID, Encryption..etc]          
-               \033[9m\033[0;31m[\033[0;32m10\033[0;31m]\033[0m: \033[0;37mPublic IP Finder
-               \033[9m\033[0;31m[\033[0;32m11\033[0;31m]\033[0m: \033[0;37mLocal IP Finder
-               \033[9m\033[0;31m[\033[0;32m12\033[0;31m]\033[0m: \033[0;37mNetwork Scanner [Find IP\'s In The Network]
+               \033[9m\033[0;31m[\033[0;32m10\033[0;31m]\033[0m: \033[0;37mNetwork Scanner [Find IP\'s In The Network]
+               \033[9m\033[0;31m[\033[0;32m11\033[0;31m]\033[0m: \033[0;37mPublic IP Finder
+               \033[9m\033[0;31m[\033[0;32m12\033[0;31m]\033[0m: \033[0;37mLocal IP Finder
                """)
     choices() 
 
